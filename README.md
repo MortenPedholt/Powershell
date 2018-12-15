@@ -1,2 +1,2 @@
-# repository01
-test for VSCode
+# Powershell by Morten Pedholt
+This is my Powershell Collection
