@@ -123,7 +123,7 @@ Else {
 '
 
 #Create Scheduled task to execute our ps file everyday 10am.
-$a = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-WindowStyle Hidden -file C:\temp\file.ps1"
+$a = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-WindowStyle Hidden -file C:\Program Files (x86)\Scripts\Bitlocker\Move_recoverykey_to_OneDrive.ps1"
 $t = New-ScheduledTaskTrigger -Daily -At 10am 
 Register-ScheduledTask -Action $a -Trigger $t -TaskName "Move Bitlockerkey to Onedrive" -Description "Move Bitlockerkey to Onedrive"
 
