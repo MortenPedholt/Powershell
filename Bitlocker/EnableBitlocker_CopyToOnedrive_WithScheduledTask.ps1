@@ -34,7 +34,7 @@ Write-host "Bitlocker is already enabled and have recoverykey"
 }
 else{
 
-$bdeProtect = Get-BitLockerVolume $OSDrive | select -Property VolumeStatus
+$bdeProtect = Get-BitLockerVolume $OSDrive | Select-Object -Property VolumeStatus
 
             if ($bdeProtect.VolumeStatus -eq "FullyDecrypted") 
 	       {
@@ -55,7 +55,7 @@ $bdeProtect = Get-BitLockerVolume $OSDrive | select -Property VolumeStatus
                 if (Get-Command $cmdName -ErrorAction SilentlyContinue)
 				{
 					#BackupToAAD-BitLockerKeyProtector commandlet exists
-                    $BLK = (Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector|?{$_.KeyProtectorType -eq 'RecoveryPassword'}
+                    $BLK = (Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector| Where-Object {$_.KeyProtectorType -eq 'RecoveryPassword'}
 
 					BackupToAAD-BitLockerKeyProtector -MountPoint $OSDrive -KeyProtectorId $BLK.KeyProtectorId
                 }
@@ -64,7 +64,7 @@ $bdeProtect = Get-BitLockerVolume $OSDrive | select -Property VolumeStatus
 
 		  		# BackupToAAD-BitLockerKeyProtector commandlet not available, using other mechanisme  
 				# Get the AAD Machine Certificate
-				$cert = dir Cert:\LocalMachine\My\ | where { $_.Issuer -match "CN=MS-Organization-Access" }
+				$cert = Get-ChildItem Cert:\LocalMachine\My\ | Where-Object { $_.Issuer -match "CN=MS-Organization-Access" }
 
 				# Obtain the AAD Device ID from the certificate
 				$id = $cert.Subject.Replace("CN=","")
@@ -74,7 +74,7 @@ $bdeProtect = Get-BitLockerVolume $OSDrive | select -Property VolumeStatus
 
 				# Generate the body to send to AAD containing the recovery information
 				# Get the BitLocker key information from WMI
-					(Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector|?{$_.KeyProtectorType -eq 'RecoveryPassword'}|%{
+					(Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector| Where-Object {$_.KeyProtectorType -eq 'RecoveryPassword'}| ForEach-Object{
 					$key = $_
 					write-verbose "kid : $($key.KeyProtectorId) key: $($key.RecoveryPassword)"
 					$body = "{""key"":""$($key.RecoveryPassword)"",""kid"":""$($key.KeyProtectorId.replace('{','').Replace('}',''))"",""vol"":""OSV""}"
@@ -149,7 +149,7 @@ if($taskExists) {
 Write-host "Scheduled task "$taskName" already exist"
 }
 else{
-$currentloggedonuser = (Get-WMIObject -class Win32_ComputerSystem | select username).username
+$currentloggedonuser = (Get-WMIObject -class Win32_ComputerSystem | Select-Object username).username
 $A = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-WindowStyle hidden -ExecutionPolicy bypass -NonInteractive -File ""C:\Program Files (x86)\Scripts\Bitlocker\Move_recoverykey_to_OneDrive.ps1"
 $T = New-ScheduledTaskTrigger -Daily -At 10am 
 $P = New-ScheduledTaskPrincipal $currentloggedonuser
