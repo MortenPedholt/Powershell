@@ -4,6 +4,7 @@ This script will enable bitlocker on the systemdrive and copy the key to onedriv
 The scheduled task will be deleted when the key have been moved from systemdrive\temp to onedrive.
 #>
 
+ 
 
 [cmdletbinding()]
     param(
@@ -20,12 +21,20 @@ If(!(test-path $psdirectory))
       New-Item -ItemType Directory -Force -Path $psdirectory
 }
 
-#Log script events to file
-Start-Transcript -Path $psdirectory\pslog.txt -Append
+#Start session log
+Start-Transcript -Path $psdirectory\pslogmainscript.txt -Append
 
 try
 {
-        $bdeProtect = Get-BitLockerVolume $OSDrive | select -Property VolumeStatus
+
+#Check if bitlocker already have a recoverykey, if it dosent it will enable bitlocker and create new recoverykey
+$checkifexist = (Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector
+ if($checkifexist) {
+Write-host "Bitlocker is already enabled and have recoverykey"
+}
+else{
+
+$bdeProtect = Get-BitLockerVolume $OSDrive | select -Property VolumeStatus
 
             if ($bdeProtect.VolumeStatus -eq "FullyDecrypted") 
 	       {
@@ -33,7 +42,8 @@ try
             Enable-BitLocker -MountPoint $OSDrive  -TpmProtector -ErrorAction Continue
             Enable-BitLocker -MountPoint $OSDrive  -RecoveryPasswordProtector
 
-	       }      
+	       }
+}    
 
                 #Writing recovery key to temp directory, another user-mode task will move this to OneDrive for Business (if configured)
                 New-Item -ItemType Directory -Force -Path "$OSDrive\temp" | out-null
@@ -46,6 +56,7 @@ try
 				{
 					#BackupToAAD-BitLockerKeyProtector commandlet exists
                     $BLK = (Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector|?{$_.KeyProtectorType -eq 'RecoveryPassword'}
+
 					BackupToAAD-BitLockerKeyProtector -MountPoint $OSDrive -KeyProtectorId $BLK.KeyProtectorId
                 }
 			    else
@@ -87,8 +98,14 @@ try
 
 
 #Create new PS file and set contect
+if (!(Test-Path "$psdirectory\Move_recoverykey_to_OneDrive.ps1")){
+
 New-Item -ItemType file -Path "$psdirectory\Move_recoverykey_to_OneDrive.ps1"
 Set-Content -Path "$psdirectory\Move_recoverykey_to_OneDrive.ps1" -Value '
+
+#Log script events to file
+$psdirectory = "$osdrive\Program Files (x86)\Scripts\Bitlocker"
+Start-Transcript -Path $psdirectory\pslog.txt -Append
 
 #Move recovery key from temp directory to OneDrive (if configured)
 $OSDrive = $env:SystemDrive
@@ -111,8 +128,9 @@ if(!(test-path $path)){
 Move-Item -Path "$OSDrive\temp\$($env:computername)_BitlockerRecoveryPassword.txt" -Destination "$($path)\$($env:computername)_BitlockerRecoveryPassword.txt"
 
 #Delete scheduledtask if recoverykey is moved to onedrive.
+# Note! Only works if users have permissions to it
 if (Test-Path "$($path)\$($env:computername)_BitlockerRecoveryPassword.txt"){
-Unregister-ScheduledTask -TaskName "Move Bitlockerkey to Onedrive" -Confirm:$false
+Unregister-ScheduledTask -TaskName "Move Bitlockerkey to Onedrive with task" -Confirm:$false
 
 }
 
@@ -120,11 +138,24 @@ Else {
 
 }	                
 
+stop-transcript
 '
+}
 
-#Create Scheduled task to execute our ps file everyday 10am.
-$a = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-WindowStyle Hidden -file C:\Program Files (x86)\Scripts\Bitlocker\Move_recoverykey_to_OneDrive.ps1"
-$t = New-ScheduledTaskTrigger -Daily -At 10am 
-Register-ScheduledTask -Action $a -Trigger $t -TaskName "Move Bitlockerkey to Onedrive" -Description "Move Bitlockerkey to Onedrive"
+#Create Scheduled task to execute our ps file "Move_recoverykey_to_OneDrive.ps1".
+$taskName = "Move Bitlockerkey to Onedrive with task"
+$taskExists = Get-ScheduledTask | Where-Object {$_.TaskName -like $taskName }
+if($taskExists) {
+Write-host "Scheduled task "$taskName" already exist"
+}
+else{
+$currentloggedonuser = (Get-WMIObject -class Win32_ComputerSystem | select username).username
+$A = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-WindowStyle hidden -ExecutionPolicy bypass -NonInteractive -File ""C:\Program Files (x86)\Scripts\Bitlocker\Move_recoverykey_to_OneDrive.ps1"
+$T = New-ScheduledTaskTrigger -Daily -At 10am 
+$P = New-ScheduledTaskPrincipal $currentloggedonuser
+$S = New-ScheduledTaskSettingsSet
+Register-ScheduledTask -TaskName "Move Bitlockerkey to Onedrive with task" -Description "Move Bitlockerkey to Onedrive with task" -Action $A -Principal $P -Trigger $T -Settings $S
+
+}
 
 Stop-Transcript
