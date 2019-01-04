@@ -28,7 +28,7 @@ try
 {
 
 #Check if bitlocker already have a recoverykey, if it dosent it will enable bitlocker and create new recoverykey
-$checkifexist = (Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector
+$checkifexist = (Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector | Where-Object {$_.KeyProtectorType -eq 'RecoveryPassword'}
  if($checkifexist) {
 Write-host "Bitlocker is already enabled and have recoverykey"
 }
@@ -45,7 +45,7 @@ $bdeProtect = Get-BitLockerVolume $OSDrive | Select-Object -Property VolumeStatu
 	       }
 }    
 
-                #Writing recovery key to temp directory, another user-mode task will move this to OneDrive for Business (if configured)
+                #Writing recovery key to temp directory, we will move this file to onedrive with scheduled task script later
                 New-Item -ItemType Directory -Force -Path "$OSDrive\temp" | out-null
 				(Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector   | Out-File "$OSDrive\temp\$($env:computername)_BitlockerRecoveryPassword.txt"
 
@@ -55,9 +55,19 @@ $bdeProtect = Get-BitLockerVolume $OSDrive | Select-Object -Property VolumeStatu
                 if (Get-Command $cmdName -ErrorAction SilentlyContinue)
 				{
 					#BackupToAAD-BitLockerKeyProtector commandlet exists
-                    $BLK = (Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector| Where-Object {$_.KeyProtectorType -eq 'RecoveryPassword'}
+					$BLK = (Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector | Where-Object {$_.KeyProtectorType -eq 'RecoveryPassword'}
+					if ($BLK.count -gt 1){
 
-					BackupToAAD-BitLockerKeyProtector -MountPoint $OSDrive -KeyProtectorId $BLK.KeyProtectorId
+					Write-Host "There are multiple recovery keys, will backup key number 1 to AzureAD"
+					$key = $BLK[0]
+					BackupToAAD-BitLockerKeyProtector -MountPoint $OSDrive -KeyProtectorId $key.KeyProtectorId
+
+					}
+					else {
+						Write-Host "There are only one recovery key, will start to backup to AzureAD"
+						BackupToAAD-BitLockerKeyProtector -MountPoint $OSDrive -KeyProtectorId $BLK.KeyProtectorId
+					}
+					
                 }
 			    else
                 { 
@@ -74,7 +84,7 @@ $bdeProtect = Get-BitLockerVolume $OSDrive | Select-Object -Property VolumeStatu
 
 				# Generate the body to send to AAD containing the recovery information
 				# Get the BitLocker key information from WMI
-					(Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector| Where-Object {$_.KeyProtectorType -eq 'RecoveryPassword'}| ForEach-Object{
+					(Get-BitLockerVolume -MountPoint $OSDrive).KeyProtector| Where-Object {$_.KeyProtectorType -eq 'RecoveryPassword'} | ForEach-Object{
 					$key = $_
 					write-verbose "kid : $($key.KeyProtectorId) key: $($key.RecoveryPassword)"
 					$body = "{""key"":""$($key.RecoveryPassword)"",""kid"":""$($key.KeyProtectorId.replace('{','').Replace('}',''))"",""vol"":""OSV""}"
@@ -97,7 +107,7 @@ $bdeProtect = Get-BitLockerVolume $OSDrive | Select-Object -Property VolumeStatu
 
 
 
-#Create new PS file and set contect
+#Create new PS to move file and set contect to move ondrive document from Temp folder to onedrive
 if (!(Test-Path "$psdirectory\Move_recoverykey_to_OneDrive.ps1")){
 
 New-Item -ItemType file -Path "$psdirectory\Move_recoverykey_to_OneDrive.ps1"
