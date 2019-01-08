@@ -1,16 +1,48 @@
-﻿#Connect to AzureAD
-Import-Module azureadpreview
+﻿<###
+DESCRIPTION
+Author: Morten Pedholt
+Created: November 2018
+Edited: January 2019
+Edited by: Morten Pedholt
+ScriptVersion: 1.0.1
+
+Updated in version 1.0.1
+Will now check if AzureAD or AzureADPreview module is installed, if not then it will install the module.
+
+
+###>
+
+#Check if AzureAD or AzureADPreview module is installed, if not it will install and import the module.
+$checkmodule = Get-Module -ListAvailable | Where-Object { $_.Name -like "*AzureAD*" } | Select Name
+if($checkmodule) {
+Write-Host "AzureAD or AzureADPreview is already installed"
+$selectmodule = $checkmodule[0] -replace "@{Name=", "" -replace "}", ""
+Import-Module $selectmodule
+}
+Else{
+Write-Host "No Module found to connect to AzureAD, installing AzureADPreview module"
+Install-Module AzureADPreview
+Import-Module AzureAdPreview
+}
+
+
+#Connect to AzureAD
 $azureadcred = Get-Credential
 Connect-AzureAD -Credential $azureadcred
 
 
-
 $newgroups = @( "All Windows 10 1507 – MDM", `
-                "All Windows 10 1511 – MDM", `                "All Windows 10 1607 – MDM", `
-                "All Windows 10 1703 – MDM", `                "All Windows 10 1709 – MDM", `                "All Windows 10 1803 – MDM", `
-                "All Windows 10 1809 – MDM", `                "All Windows Devices – MDM", `                "All Android Devices – MDM", `
+                "All Windows 10 1511 – MDM", `
+                "All Windows 10 1607 – MDM", `
+                "All Windows 10 1703 – MDM", `
+                "All Windows 10 1709 – MDM", `
+                "All Windows 10 1803 – MDM", `
+                "All Windows 10 1809 – MDM", `
+                "All Windows Devices – MDM", `
+                "All Android Devices – MDM", `
                 "All iOS Devices – MDM", `
-                "All macOS Devices – MDM", `                "All Windows Enrolled Devices – MDM",`
+                "All macOS Devices – MDM", `
+                "All Windows Enrolled Devices – MDM",`
                 "Update ring - SAC-T",`
                 "Update ring - SAC",`
                 "Update ring - Insider")
