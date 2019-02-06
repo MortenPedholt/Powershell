@@ -34,5 +34,3 @@ explorer https://github.com/git-for-windows/git/releases/download/v2.20.0.window
 
 #git config --global user.email "you@example.com"
 #git config --global user.name "Your Name"
-
-yrdyrt
