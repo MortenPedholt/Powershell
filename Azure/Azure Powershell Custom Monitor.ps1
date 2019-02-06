@@ -9,7 +9,7 @@ read-host -assecurestring | convertfrom-securestring | out-file c:\temp\cred.txt
 
 # state variables
 $tenantId = "b54d1591-7d75-4215-8260-5a0d9763578e"
-$appId = "e65140aa-9b55-4bd7-8f4a-19aae4bc42df@zebragroup.onmicrosoft.com"
+$appId = "e65140aa-9b55-4bd7-8f4a-19aae4bc42df@mydomain.onmicrosoft.com"
 $secret = get-content -Path "C:\temp\cred.txt" | ConvertTo-SecureString
 
 
@@ -27,6 +27,6 @@ Connect-AzureRmAccount -ServicePrincipal -Credential $cred -TenantId $tenantId
 
 
 # state variables
-$connection = Get-AzureRmVirtualNetworkGatewayConnection -ResourceGroupName "Shared-Infrastructure-Azure" -Name "AzureProdVpnConnection"
+$connection = Get-AzureRmVirtualNetworkGatewayConnection -ResourceGroupName "resourcegroupname" -Name "NameofVPNconnection"
 
 write-host $connection.ConnectionStatus -ForegroundColor green
