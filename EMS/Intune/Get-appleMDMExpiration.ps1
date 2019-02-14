@@ -42,18 +42,26 @@ function Send-O365MailMessage {
     $SMTPClient.Send($MailMessage)
 }
 
-# Define email information details
-$AzureAutomationCredentialName = "IntuneAutomation"
-$MailRecipient = "moped@itrelation.dk"
-$MailFrom = "adminitr@GeorgJensenGlobal.onmicrosoft.com"
+#########################
+# Edit These Variables! #
+#########################
 
-# Define Azure Automation variables
+$MailFrom = "adminitr@GeorgJensenGlobal.onmicrosoft.com"
+$MailRecipient = "moped@itrelation.dk"
+$AppleMDMPushCertificateNotificationRange = 250
+
+##########################
+# THE SCRIPT STARTS HERE #
+##########################
+
+# Email Sender Account
+$AzureAutomationCredentialName = "IntuneAutomation"
+
+# Azure Automation variables
 $AzureAutomationCredentialName = "IntuneAutomation"
 $AzureAutomationVariableAppClientID = "AppclientID"
-$AzureAutomationVariableTenantName = "Mytenant"
+$AzureAutomationVariableTenantName = "DirectoryName"
 
-# Define monitoring options
-$AppleMDMPushCertificateNotificationRange = 250
 
 try {
     # Import required modules
