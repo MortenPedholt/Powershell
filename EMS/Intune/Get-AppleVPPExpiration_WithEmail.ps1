@@ -46,8 +46,8 @@ function Send-O365MailMessage {
 # Edit These Variables! #
 #########################
 
-$MailFrom = "mailfrom@domain.com"
-$MailRecipient = "Mailrecipient@domain.com"
+$MailFrom = "exmoped@GeorgJensenGlobal.onmicrosoft.com"
+$MailRecipient = "moped@itrelation.dk"
 $AppleMDMPushCertificateNotificationRange = 250
 
 ##########################
@@ -81,37 +81,37 @@ try {
             Write-Output -InputObject "Attempting to retrieve authentication token"
             $AuthToken = Get-MSIntuneAuthToken -TenantName $TenantName -ClientID $AppClientID -Credential $Credential -ErrorAction Stop
             if ($AuthToken -ne $null) {
-                Write-Output -InputObject "Successfully retrieved authentication token"
+                Write-Output -InputObject "Successfully retrieved VPP authentication token"
 
                 try {
-                    # Get Apple MDM Push certificates
-                    $AppleMDMPushResource = "https://graph.microsoft.com/v1.0/devicemanagement/applePushNotificationCertificate"
-                    $AppleMDMPushCertificate = Invoke-RestMethod -Uri $AppleMDMPushResource -Method Get -Headers $AuthToken -ErrorAction Stop
+                    # Get Apple VPP Push certificates
+                    $AppleVPPPushResource = "https://graph.microsoft.com/v1.0/devicemanagement/applePushNotificationCertificate"
+                    $AppleVPPPushCertificate = Invoke-RestMethod -Uri $AppleVPPPushResource -Method Get -Headers $AuthToken -ErrorAction Stop
 
-                    if ($AppleMDMPushCertificate -ne $null) {
-                        Write-Output -InputObject "Successfully retrieved Apple MDM Push certificate"
+                    if ($AppleVPPPushCertificate -ne $null) {
+                        Write-Output -InputObject "Successfully retrieved Apple VPP Push certificate"
 
                         # Parse the JSON date time string into an DateTime object
-                        $AppleMDMPushCertificateExpirationDate = [System.DateTime]::Parse($AppleMDMPushCertificate.expirationDateTime)
+                        $AppleVPPPushCertificateExpirationDate = [System.DateTime]::Parse($AppleVPPPushCertificate.expirationDateTime)
                     
-                        # Validate that the MDM Push certificate has not already expired
-                        if ($AppleMDMPushCertificateExpirationDate -lt (Get-Date)) {
-                            Write-Output -InputObject "Apple MDM Push certificate has already expired, sending notification email"
-                            Send-O365MailMessage -Credential $AzureAutomationCredentialName -Body "ACTION REQUIRED: Apple MDM Push certificate has expired" -Subject "MSIntune: IMPORTANT - Apple MDM Push certificate has expired" -Recipient $MailRecipient -From $MailFrom
+                        # Validate that the VPP Push certificate has not already expired
+                        if ($AppleVPPPushCertificateExpirationDate -lt (Get-Date)) {
+                            Write-Output -InputObject "Apple VPP Push certificate has already expired, sending notification email"
+                            Send-O365MailMessage -Credential $AzureAutomationCredentialName -Body "ACTION REQUIRED: Apple VPP Push certificate has expired" -Subject "MSIntune: IMPORTANT - Apple VPP Push certificate has expired" -Recipient $MailRecipient -From $MailFrom
                         }
                         else {
-                            $AppleMDMPushCertificateDaysLeft = ($AppleMDMPushCertificateExpirationDate - (Get-Date))
-                            if ($AppleMDMPushCertificateDaysLeft.Days -le $AppleMDMPushCertificateNotificationRange) {
-                                Write-Output -InputObject "Apple MDM Push certificate has not expired, but is within the given expiration notification range"
-                                Send-O365MailMessage -Credential $AzureAutomationCredentialName -Body "Please take action before the Apple MDM Push certificate expires in $($AppleMDMPushCertificateDaysLeft.Days) days in Directory $($TenantName)" -Subject "MSIntune: Apple MDM Push certificate expires in $($AppleMDMPushCertificateDaysLeft.Days) days in Directory $($TenantName)" -Recipient $MailRecipient -From $MailFrom
+                            $AppleVPPPushCertificateDaysLeft = ($AppleVPPPushCertificateExpirationDate - (Get-Date))
+                            if ($AppleVPPPushCertificateDaysLeft.Days -le $AppleVPPPushCertificateNotificationRange) {
+                                Write-Output -InputObject "Apple VPP Push certificate has not expired, but is within the given expiration notification range"
+                                Send-O365MailMessage -Credential $AzureAutomationCredentialName -Body "Please take action before the Apple VPP Push certificate expires in $($AppleVPPPushCertificateDaysLeft.Days) days in Directory $($TenantName)" -Subject "MSIntune: Apple VPP Push certificate expires in $($AppleVPPPushCertificateDaysLeft.Days) days in Directory $($TenantName)" -Recipient $MailRecipient -From $MailFrom
                             }
                             else {
-                                Write-Output -InputObject "Apple MDM Push certificate has not expired and is outside of the specified expiration notification range"
+                                Write-Output -InputObject "Apple VPP Push certificate has not expired and is outside of the specified expiration notification range"
                             }
                         }
                     }
                     else {
-                        Write-Output -InputObject "Query for Apple MDM Push certificates returned empty"
+                        Write-Output -InputObject "Query for Apple VPP Push certificates returned empty"
                     }    
                 }
                 catch [System.Exception] {
