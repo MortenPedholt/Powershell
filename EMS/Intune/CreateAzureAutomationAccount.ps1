@@ -4,8 +4,8 @@ Connect-AzureRmAccount
 #########################
 # Edit These Variables! #
 #########################
-$directoryname = "ITRelation.onmicrosoft.com"
-$applicationid = "e5954027-ab65-4126-9012-9b7f68af83b3"
+$directoryname = "mydirectory.onmicrosoft.com"
+$applicationid = "MYAPPID_e5954027-ab65-4126-9012-9b7f68af83b3"
 
 #####################
 # No need to change #
