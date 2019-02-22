@@ -4,24 +4,24 @@ Connect-AzureRmAccount
 #########################
 # Edit These Variables! #
 #########################
-$directoryname = "Directoryname"
-$applicationid = "aaaaaaa-aaaa-bbbb-cccc-dddddd"
+$directoryname = "ITRelation.onmicrosoft.com"
+$applicationid = "e5954027-ab65-4126-9012-9b7f68af83b3"
 
 #####################
 # No need to change #
 #####################
 $scriptpath = Get-Location
-$rgname = "ITR-IntuneService"
+$rgname = "ResourceGroupName"
 $location = "West Europe"
-$automationaccountname = "ITR-Automationaccount"
+$automationaccountname = "AutomationAccountName"
 $automationcredential = "IntuneAutomation"
-$runbookName01 = "ITR_Apple_Cert"
-$runbookName02 = "ITR_VPP_Cert"
+$runbookName01 = "RunbookName01"
+$runbookName02 = "RunbookName02"
 $schedulename01 = "Daily Schedule for $($runbookName01)"
 $schedulename02 = "Daily Schedule for $($runbookName02)"
 $startTime = (get-date).AddDays(+1)
-$storageaccountname = "itrintuneserviceformdm"
-$blobname = "powershellmodulesformdm"
+$storageaccountname = "StorageAccountName"
+$blobname = "BlobStorageName"
 
 
 ##########################
