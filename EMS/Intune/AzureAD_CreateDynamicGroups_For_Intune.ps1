@@ -2,25 +2,27 @@
 DESCRIPTION
 Author: Morten Pedholt
 Created: November 2018
-Edited: January 2019
+Edited: April 2019
 Edited by: Morten Pedholt
-ScriptVersion: 1.0.1
+ScriptVersion: 1.0.2
 
 Updated in version 1.0.1
 Will now check if AzureAD or AzureADPreview module is installed, if not then it will install the module.
 
+Update in Version 1.0.2
+Check specific for AzureADPreview module, it's required for using the "AzureADMSgroup" cmdlet.
 
 ###>
 
 #Check if AzureAD or AzureADPreview module is installed, if not it will install and import the module.
-$checkmodule = Get-Module -ListAvailable | Where-Object { $_.Name -like "*AzureAD*" } | Select Name
+$checkmodule = Get-Module -ListAvailable | Where-Object { $_.Name -like "*AzureADPreview" } | Select-Object Name
 if($checkmodule) {
-Write-Host "AzureAD or AzureADPreview is already installed"
-$selectmodule = $checkmodule[0] -replace "@{Name=", "" -replace "}", ""
+Write-Host "AzureADPreview is already installed"
+$selectmodule = $checkmodule -replace "@{Name=", "" -replace "}", ""
 Import-Module $selectmodule
 }
 Else{
-Write-Host "No Module found to connect to AzureAD, installing AzureADPreview module"
+Write-Host "AzureADPreview is not installed, installing AzureADPreview module"
 Install-Module AzureADPreview
 Import-Module AzureAdPreview
 }
@@ -43,6 +45,8 @@ $newgroups = @( "All Windows 10 1507 – MDM", `
                 "All iOS Devices – MDM", `
                 "All macOS Devices – MDM", `
                 "All Windows Enrolled Devices – MDM",`
+                "Test User - MDM",`
+                "Test Device - MDM",`
                 "Update ring - SAC-T",`
                 "Update ring - SAC",`
                 "Update ring - Insider")
@@ -74,7 +78,7 @@ New-AzureADMSGroup -DisplayName "All macOS Devices – MDM" -MailEnabled $false 
 
 
 #Create Dynamic groups for all MDM enrolled Windows devices
-New-AzureADMSGroup -DisplayName "All Enrolled Windows Devices – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows Enrolled Devices – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.managementType -eq ""MDM"") -and (device.deviceOSType -contains ""Windows"")" -MembershipRuleProcessingState On
+New-AzureADMSGroup -DisplayName "All Enrolled Windows Devices – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows Enrolled Devices – MDM" -GroupTypes "DynamicMembership" -MembershipRule "(device.managementType -eq ""MDM"") -and (device.deviceOSType -contains ""Windows"")" -MembershipRuleProcessingState On
 
 
 #Create test groups for MDM enrollment
