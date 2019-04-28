@@ -23,7 +23,7 @@ Import-Module $selectmodule
 }
 Else{
 Write-Host "AzureADPreview is not installed, installing AzureADPreview module"
-Install-Module AzureADPreview
+Install-Module AzureADPreview -AllowClobber
 Import-Module AzureAdPreview
 }
 
@@ -44,11 +44,11 @@ $newgroups = @( "All Windows 10 1507 – MDM", `
                 "All Android Devices – MDM", `
                 "All iOS Devices – MDM", `
                 "All macOS Devices – MDM", `
-                "All Windows Enrolled Devices – MDM",`
-                "Test User - MDM",`
-                "Test Device - MDM",`
-                "Update ring - SAC-T",`
-                "Update ring - SAC",`
+                "All Windows Enrolled Devices – MDM", `
+                "Test User - MDM", `
+                "Test Device - MDM", `
+                "Update ring - SAC-T", `
+                "Update ring - SAC", `
                 "Update ring - Insider")
 
 #Check if group already exist, if any group exist it will end and error.
