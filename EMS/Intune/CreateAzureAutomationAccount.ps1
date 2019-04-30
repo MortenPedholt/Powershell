@@ -1,16 +1,15 @@
-Connect-AzureRmAccount
-
-
 #########################
 # Edit These Variables! #
 #########################
-$directoryname = "itrsandboxmoped.onmicrosoft.com"
-$applicationid = "0d2b8f3c-f265-4cdb-9795-c97de8bf408f"
+$subscriptionname = ""
+$directoryname = ""
+$applicationid = ""
 
-$rgname = "ResourceGroupName"
+$rgname = "MDMCert"
 $location = "West Europe"
 $storageaccountname = "itrmasde322asdwe"
 $blobname = "itrmasde322asdwebloc"
+
 
 #####################
 # No need to change #
@@ -19,16 +18,17 @@ $scriptpath = Get-Location
 $automationaccountname = "AutomationAccountName"
 $automationcredential = "IntuneAutomation"
 $runbookName01 = "AppleMDMCert"
-$runbookName02 = "AppleVPP"
+$runbookName02 = "AppleVPPCert"
 $schedulename01 = "Daily Schedule for $($runbookName01)"
 $schedulename02 = "Daily Schedule for $($runbookName02)"
 $startTime = (get-date).AddDays(+1)
 
-
-
 ##########################
 # THE SCRIPT STARTS HERE #
 ##########################
+#Connect Azure subscription and select subscription
+Connect-AzureRmAccount
+Select-AzureRmSubscription -Subscription $subscriptionid
 
 #Create resourcegroup
 New-AzureRmResourceGroup -Name $rgname -Location $location

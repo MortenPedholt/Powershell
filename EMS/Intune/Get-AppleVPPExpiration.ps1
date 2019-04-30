@@ -1,3 +1,4 @@
+# Functions
 function Send-O365MailMessage {
     param (
         [parameter(Mandatory=$true)]
@@ -41,47 +42,93 @@ function Send-O365MailMessage {
     $SMTPClient.Send($MailMessage)
 }
 
-# Import required modules
+#########################
+# Edit These Variables! #
+#########################
+
+$MailFrom = "Mailfrom"
+$MailRecipient = "MailTo"
+$AppleMDMPushCertificateNotificationRange = 365
+
+##########################
+# THE SCRIPT STARTS HERE #
+##########################
+
+# Email Sender Account
+$AzureAutomationCredentialName = "IntuneAutomation"
+
+# Azure Automation variables
+$AzureAutomationVariableAppClientID = "AppclientID"
+$AzureAutomationVariableTenantName = "DirectoryName"
+
+
 try {
+    # Import required modules
+    Write-Output -InputObject "Importing required modules AzureAD and PSIntuneAuth"
     Import-Module -Name AzureAD -ErrorAction Stop
     Import-Module -Name PSIntuneAuth -ErrorAction Stop
-}
-catch {
-    Write-Warning -Message "Failed to import modules"
-}
-# Read credentials and variables
-$Credential = Get-AutomationPSCredential -Name "IntuneAutomation"
-$AppClientID = Get-AutomationVariable -Name "AppClientID"
-$TenantName = Get-AutomationVariable -Name "DirectoryName"
 
-# Acquire authentication token
-try {
-    Write-Output -InputObject "Attempting to retrieve authentication token"
-    $AuthToken = Get-MSIntuneAuthToken -TenantName $TenantName -ClientID $AppClientID -Credential $Credential
-    if ($AuthToken -ne $null) {
-        Write-Output -InputObject "Successfully retrieved authentication token"
+    try {
+        # Read credentials and variables
+        Write-Output -InputObject "Reading automation variables"
+        $Credential = Get-AutomationPSCredential -Name $AzureAutomationCredentialName -ErrorAction Stop
+        $AppClientID = Get-AutomationVariable -Name $AzureAutomationVariableAppClientID -ErrorAction Stop
+        $TenantName = Get-AutomationVariable -Name $AzureAutomationVariableTenantName -ErrorAction Stop
+
+        try {
+            # Retrieve authentication token
+            Write-Output -InputObject "Attempting to retrieve authentication token"
+            $AuthToken = Get-MSIntuneAuthToken -TenantName $TenantName -ClientID $AppClientID -Credential $Credential -ErrorAction Stop
+            if ($AuthToken -ne $null) {
+                Write-Output -InputObject "Successfully retrieved authentication token"
+
+                try {
+                    # Get Apple MDM Push certificates
+                    $AppleMDMPushResource = "https://graph.microsoft.com/beta/deviceAppManagement/vppTokens"
+                    $AppleMDMPushCertificate = Invoke-RestMethod -Uri $AppleMDMPushResource -Method Get -Headers $AuthToken -ErrorAction Stop
+
+                    if ($AppleMDMPushCertificate -ne $null) {
+                        Write-Output -InputObject "Successfully retrieved Apple MDM Push certificate"
+
+                        # Parse the JSON date time string into an DateTime object
+                        $AppleMDMPushCertificateExpirationDate = [System.DateTime]::Parse($AppleMDMPushCertificate.expirationDateTime)
+                    
+                        # Validate that the MDM Push certificate has not already expired
+                        if ($AppleMDMPushCertificateExpirationDate -lt (Get-Date)) {
+                            Write-Output -InputObject "Apple MDM Push certificate has already expired, sending notification email"
+                            Send-O365MailMessage -Credential $AzureAutomationCredentialName -Body "ACTION REQUIRED: Apple MDM Push certificate has expired" -Subject "MSIntune: IMPORTANT - Apple MDM Push certificate has expired" -Recipient $MailRecipient -From $MailFrom
+                        }
+                        else {
+                            $AppleMDMPushCertificateDaysLeft = ($AppleMDMPushCertificateExpirationDate - (Get-Date))
+                            if ($AppleMDMPushCertificateDaysLeft.Days -le $AppleMDMPushCertificateNotificationRange) {
+                                Write-Output -InputObject "Apple MDM Push certificate has not expired, but is within the given expiration notification range"
+                                Send-O365MailMessage -Credential $AzureAutomationCredentialName -Body "Please take action before the Apple MDM Push certificate expires in $($AppleMDMPushCertificateDaysLeft.Days) days in Directory $($TenantName)" -Subject "MSIntune: Apple MDM Push certificate expires in $($AppleMDMPushCertificateDaysLeft.Days) days in Directory $($TenantName)" -Recipient $MailRecipient -From $MailFrom
+                            }
+                            else {
+                                Write-Output -InputObject "Apple MDM Push certificate has not expired and is outside of the specified expiration notification range"
+                            }
+                        }
+                    }
+                    else {
+                        Write-Output -InputObject "Query for Apple MDM Push certificates returned empty"
+                    }    
+                }
+                catch [System.Exception] {
+                    Write-Warning -Message "An error occurred. Error message: $($_.Exception.Message)"
+                }
+            }
+            else {
+                Write-Warning -Message "An error occurred while attempting to retrieve an authentication token"
+            }
+        }
+        catch [System.Exception] {
+            Write-Warning -Message "Failed to retrieve authentication token"
+        }
+    }
+    catch [System.Exception] {
+        Write-Warning -Message "Failed to read automation variables"
     }
 }
 catch [System.Exception] {
-    Write-Warning -Message "Failed to retrieve authentication token"
-}
-# Get Apple VPP tokens
-Write-Output -InputObject "Attempting to retrieve Apple VPP tokens"
-$AppleVPPResource = "https://graph.microsoft.com/beta/deviceAppManagement/vppTokens"
-$AppleVPPTokens = (Invoke-RestMethod -Uri $AppleVPPResource -Method Get -Headers $AuthToken).Value
-# Validate tokens
-if ($AppleVPPTokens -ne $null) {
-    foreach ($AppleVPPToken in $AppleVPPTokens) {
-        $AppleVPPExpirationDate = [System.DateTime]::Parse($AppleVPPToken.expirationDateTime)
-        if ($AppleVPPExpirationDate -lt (Get-Date)) {
-            Write-Output -InputObject "Apple VPP token has already expired"
-        }
-        else {
-            $AppleVPPTokenDaysLeft = ($AppleVPPExpirationDate-(Get-Date))
-            Write-Output -InputObject "Apple VPP token expires in days: $($AppleVPPTokenDaysLeft.Days)"
-        }
-    }
-}
-else {
-    Write-Output -InputObject "Query for Apple VPP tokens returned empty"
+    Write-Warning -Message "Failed to import modules"
 }

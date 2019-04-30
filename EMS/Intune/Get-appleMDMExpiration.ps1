@@ -46,8 +46,8 @@ function Send-O365MailMessage {
 # Edit These Variables! #
 #########################
 
-$MailFrom = "jj@itrsandboxmoped.onmicrosoft.com"
-$MailRecipient = "moped@itrelation.dk"
+$MailFrom = "Mailfrom"
+$MailRecipient = "MailTo"
 $AppleMDMPushCertificateNotificationRange = 365
 
 ##########################
@@ -58,7 +58,6 @@ $AppleMDMPushCertificateNotificationRange = 365
 $AzureAutomationCredentialName = "IntuneAutomation"
 
 # Azure Automation variables
-$AzureAutomationCredentialName = "IntuneAutomation"
 $AzureAutomationVariableAppClientID = "AppclientID"
 $AzureAutomationVariableTenantName = "DirectoryName"
 
