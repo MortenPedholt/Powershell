@@ -46,9 +46,9 @@ function Send-O365MailMessage {
 # Edit These Variables! #
 #########################
 
-$MailFrom = "user@domain.com"
-$MailRecipient = "user@domain.com"
-$AppleMDMPushCertificateNotificationRange = 250
+$MailFrom = "jj@itrsandboxmoped.onmicrosoft.com"
+$MailRecipient = "moped@itrelation.dk"
+$AppleMDMPushCertificateNotificationRange = 365
 
 ##########################
 # THE SCRIPT STARTS HERE #

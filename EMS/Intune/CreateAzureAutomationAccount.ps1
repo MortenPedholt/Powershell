@@ -4,24 +4,26 @@ Connect-AzureRmAccount
 #########################
 # Edit These Variables! #
 #########################
-$directoryname = "mydirectory.onmicrosoft.com"
-$applicationid = "MYAPPID_e5954027-ab65-4126-9012-9b7f68af83b3"
+$directoryname = "itrsandboxmoped.onmicrosoft.com"
+$applicationid = "0d2b8f3c-f265-4cdb-9795-c97de8bf408f"
+
+$rgname = "ResourceGroupName"
+$location = "West Europe"
+$storageaccountname = "itrmasde322asdwe"
+$blobname = "itrmasde322asdwebloc"
 
 #####################
 # No need to change #
 #####################
 $scriptpath = Get-Location
-$rgname = "ResourceGroupName"
-$location = "West Europe"
 $automationaccountname = "AutomationAccountName"
 $automationcredential = "IntuneAutomation"
-$runbookName01 = "RunbookName01"
-$runbookName02 = "RunbookName02"
+$runbookName01 = "AppleMDMCert"
+$runbookName02 = "AppleVPP"
 $schedulename01 = "Daily Schedule for $($runbookName01)"
 $schedulename02 = "Daily Schedule for $($runbookName02)"
 $startTime = (get-date).AddDays(+1)
-$storageaccountname = "StorageAccountName"
-$blobname = "BlobStorageName"
+
 
 
 ##########################
