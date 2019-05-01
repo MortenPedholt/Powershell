@@ -19,7 +19,7 @@ $secret = get-content -Path "C:\temp\cred.txt" | ConvertTo-SecureString
 $cred = New-Object -TypeName System.Management.Automation.PSCredential($appId ,$secret)
 
 # log On To Azure Account 
-Connect-AzureRmAccount -ServicePrincipal -Credential $cred -TenantId $tenantId
+Connect-AzAccount -ServicePrincipal -Credential $cred -TenantId $tenantId
 
 
 ##### After this other cmdlets can be executed as required #####
@@ -27,6 +27,6 @@ Connect-AzureRmAccount -ServicePrincipal -Credential $cred -TenantId $tenantId
 
 
 # state variables
-$connection = Get-AzureRmVirtualNetworkGatewayConnection -ResourceGroupName "resourcegroupname" -Name "NameofVPNconnection"
+$connection = Get-AzVirtualNetworkGatewayConnection -ResourceGroupName "resourcegroupname" -Name "NameofVPNconnection"
 
 write-host $connection.ConnectionStatus -ForegroundColor green
