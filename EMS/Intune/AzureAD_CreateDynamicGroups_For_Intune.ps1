@@ -14,7 +14,7 @@ Check specific for AzureADPreview module, it's required for using the "AzureADMS
 
 ###>
 
-#Check if AzureAD or AzureADPreview module is installed, if not it will install and import the module.
+#Check if AzureADPreview module is installed, if not it will install and import the module.
 $checkmodule = Get-Module -ListAvailable | Where-Object { $_.Name -like "*AzureADPreview" } | Select-Object Name
 if($checkmodule) {
 Write-Host "AzureADPreview is already installed"
@@ -87,6 +87,6 @@ New-AzureADGroup -DisplayName "Test Device - MDM" -MailEnabled $false -MailNickn
 
 
 #Create Windows update ring groups
-New-AzureADGroup -DisplayName "Update ring - SAC-T" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - SAC-T" 
+New-AzureADGroup -DisplayName "Update ring - SAC-T" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - SAC-T"
 New-AzureADGroup -DisplayName "Update ring - Insider" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - Insider" 
 New-AzureADMSGroup -DisplayName "Update ring - SAC" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - SAC" -GroupTypes DynamicMembership -MembershipRule "(device.managementType -eq ""MDM"") -and (device.deviceOSType -contains ""Windows"")" -MembershipRuleProcessingState On
