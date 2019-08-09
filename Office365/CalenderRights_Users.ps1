@@ -6,7 +6,7 @@ $ScriptPath = $MyInvocation.MyCommand.Path
 $ScriptPath = Split-Path $ScriptPath
 
 # Connect and create Session
-$password = type $ScriptPath\o365Password_Scheduler.txt | ConvertTo-SecureString 
+$password = get-content $ScriptPath\o365Password_Scheduler.txt | ConvertTo-SecureString 
 $userid = "admin@domain.com"
 $cred = New-Object System.Management.Automation.PSCredential $userid,$password 
 $global:session365 = New-PSSession -configurationname Microsoft.Exchange -connectionuri https://outlook.office365.com/powershell-liveid/ -credential $cred -authentication Basic -AllowRedirection 

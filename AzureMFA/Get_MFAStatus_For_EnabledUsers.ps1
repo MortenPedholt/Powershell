@@ -32,7 +32,7 @@ foreach ($User in $MFAUsers)
     RememberDevicesNotIssuedBefore = $StrongAuthenticationRequirements.RememberDevicesNotIssuedBefore
     StrongAuthenticationUserDetailsPhoneNumber = $StrongAuthenticationUserDetails.PhoneNumber
     StrongAuthenticationUserDetailsEmail = $StrongAuthenticationUserDetails.Email
-    DefaultStrongAuthenticationMethodType = ($StrongAuthenticationMethods | Where {$_.IsDefault -eq $True}).MethodType
+    DefaultStrongAuthenticationMethodType = ($StrongAuthenticationMethods | Where-Object {$_.IsDefault -eq $True}).MethodType
     }
 }
 

@@ -1,0 +1,1 @@
+Send-MailMessage -SmtpServer smtp.office365.com -port 587 -To user@domain.dk -From user@domain.dk -Body "test" -Subject "test" -Credential $cred -UseSsl
