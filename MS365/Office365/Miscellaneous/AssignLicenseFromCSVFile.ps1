@@ -57,11 +57,11 @@
 param(
     [Parameter(Mandatory = $True)]
     [ValidateNotNullOrEmpty()]
-    [string]$InputFile = "",
+    [string]$InputFile = "C:\Users\moped\Desktop\users.csv",
     
     [int]$SkipLine = 0,
     
-    [switch]$StartTranscript = $True
+    [switch]$StartTranscript = $false
     )
 
 $CurrentDate = (Get-Date -Format "dd-MM-yyyy_HH-mm")
@@ -73,7 +73,7 @@ $errcount = 0
 $OutputLog = ".\assign_LicenseO365-Log_$CurrentDate.txt"
 $OutputErrorLog = ".\assign_LicenseO365-Error_$CurrentDate.txt" 
 $OutputTranscript = ".\assign_LicenseO365-Transcript_$CurrentDate.txt"
-$License = "reseller-account:SPE_E3"                        #Needs to be changed as per your environment SkuID of License
+$License = "amalienet:AAD_PREMIUM"                        #Needs to be changed as per your environment SkuID of License
 $UsageLocation = "DK"                                     #Needs to be changes as per your usage location
 
 #endregion
