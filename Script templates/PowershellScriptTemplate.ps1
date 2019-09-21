@@ -5,12 +5,6 @@
 ##*===============================================    
 
 
-The script is provided as a template to perform an install or uninstall of an application(s).
-The script either performs an "Install" deployment type or an "Uninstall" deployment type.
-The install deployment type is broken down into 3 main sections/phases: Pre-Install, Install, and Post-Install.
-The script dot-sources the AppDeployToolkitMain.ps1 script which contains the logic and functions required to install or uninstall an application.
-
-
 Script author: Morten Pedholt
 Script created on: November 2019
 Script edited date: April 2020
@@ -64,10 +58,10 @@ if ($logpath) {
 
 
 ##*===============================================
-##*  START - CHECK FOR MODULE IN SCRIPT
+##*  START - CHECK IF REQUIRED MODULE IS INSTALLED
 ##*===============================================
 
-#Check if the required module is installed is installed, if not it will install and import the module.
+#Check if the required module is installed, if not it will install and import the module.
 if ($modulename) {
     $checkmodule = Get-Module -ListAvailable | Where-Object { $_.Name -like $modulename } -Verbose
     if($checkmodule) {
@@ -85,7 +79,7 @@ if ($modulename) {
 }
 
 ##*===============================================
-##*  END - CHECK FOR MODULE IN SCRIPT
+##*  END - CHECK IF REQUIRED MODULE IS INSTALLED
 ##*===============================================
 
 ##*===============================================
