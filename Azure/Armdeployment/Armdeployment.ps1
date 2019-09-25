@@ -39,7 +39,7 @@ It was not found, please install from: https://docs.microsoft.com/en-us/powershe
 
 # sign in
 Write-Host "Logging in...";
-#connect-AzAccount;
+connect-AzAccount;
 
 # select subscription
 Write-Host "Selecting subscription '$subscriptionId'";

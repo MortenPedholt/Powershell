@@ -1,4 +1,4 @@
-﻿#This Sciprt will remove all domains except the domains in the parameter "$acceptedDomains"
+﻿#This Script will remove all domains except the domains in the parameter "$acceptedDomains"
 
 $users = Get-ADUser -Filter * -Properties proxyAddresses
 $acceptedDomains = ("mydomain01.mail.onmicrosoft.com", "mydomina02.com", "mydomain01.com")

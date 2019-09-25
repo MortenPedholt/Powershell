@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10
 
 
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+#Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
 
 $AppList = "46928bounde.EclipseManager",
            "ActiproSoftwareLLC.562882FEEB491",
@@ -34,7 +34,7 @@ $AppList = "46928bounde.EclipseManager",
 ForEach ($App in $AppList)
 {
 $AppFullName = (Get-AppxPackage $App).PackageFullName
-$ProAppFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -eq $App}).PackageName
+$ProAppFullName = (Get-AppxProvisionedPackage -online | Where-Object {$_.Displayname -eq $App}).PackageName
     write-host $AppFullName
     Write-Host $ProAppFullName
     if ($AppFullName)
@@ -57,4 +57,4 @@ $ProAppFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -e
     }
 }
 
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy restricted -Force 
+#Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy restricted -Force 
