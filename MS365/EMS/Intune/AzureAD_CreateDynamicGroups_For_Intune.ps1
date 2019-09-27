@@ -40,6 +40,8 @@ $newgroups = @( "All Windows 10 1507 – MDM", `
                 "All Windows 10 1709 – MDM", `
                 "All Windows 10 1803 – MDM", `
                 "All Windows 10 1809 – MDM", `
+                "All Windows 10 1903 – MDM", `
+                "All Windows 10 1909 – MDM", `
                 "All Windows Devices – MDM", `
                 "All Android Devices – MDM", `
                 "All iOS Devices – MDM", `
@@ -47,9 +49,8 @@ $newgroups = @( "All Windows 10 1507 – MDM", `
                 "All Windows Enrolled Devices – MDM", `
                 "Test User - MDM", `
                 "Test Device - MDM", `
-                "Update ring - SAC-T", `
-                "Update ring - SAC", `
-                "Update ring - Insider")
+                "Update ring - Insider - MDM", `
+                "Update ring - SAC - MDM")
 
 #Check if group already exist, if any group exist it will end and error.
 $azureadgroups = Get-AzureADMSGroup | Where-Object { $newgroups -contains $_.DisplayName}
@@ -68,6 +69,8 @@ New-AzureADMSGroup -DisplayName "All Windows 10 1703 – MDM" -MailEnabled $fals
 New-AzureADMSGroup -DisplayName "All Windows 10 1709 – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows 10 1709 – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.deviceOSVersion -contains ""10.0.16299"")" -MembershipRuleProcessingState On
 New-AzureADMSGroup -DisplayName "All Windows 10 1803 – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows 10 1803 – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.deviceOSVersion -contains ""10.0.17134"")" -MembershipRuleProcessingState On
 New-AzureADMSGroup -DisplayName "All Windows 10 1809 – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows 10 1809 – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.deviceOSVersion -contains ""10.0.17763"")" -MembershipRuleProcessingState On
+New-AzureADMSGroup -DisplayName "All Windows 10 1903 – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows 10 1903 – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.deviceOSVersion -contains ""10.0.18362"")" -MembershipRuleProcessingState On
+New-AzureADMSGroup -DisplayName "All Windows 10 1909 – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows 10 1909 – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.deviceOSVersion -contains ""10.0.18363"")" -MembershipRuleProcessingState On
 
 
 #Create Dynamic groups for specific OSType Versions
@@ -82,11 +85,10 @@ New-AzureADMSGroup -DisplayName "All Enrolled Windows Devices – MDM" -MailEnab
 
 
 #Create test groups for MDM enrollment
-New-AzureADGroup -DisplayName "Test User - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "ITR Test User - MDM" 
-New-AzureADGroup -DisplayName "Test Device - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "ITR Test Device - MDM" 
+New-AzureADGroup -DisplayName "Test User - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Test User - MDM" 
+New-AzureADGroup -DisplayName "Test Device - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Test Device - MDM" 
 
 
 #Create Windows update ring groups
-New-AzureADGroup -DisplayName "Update ring - SAC-T" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - SAC-T"
-New-AzureADGroup -DisplayName "Update ring - Insider" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - Insider" 
-New-AzureADMSGroup -DisplayName "Update ring - SAC" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - SAC" -GroupTypes DynamicMembership -MembershipRule "(device.managementType -eq ""MDM"") -and (device.deviceOSType -contains ""Windows"")" -MembershipRuleProcessingState On
+New-AzureADGroup -DisplayName "Update ring - Insider - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - Insider" 
+New-AzureADMSGroup -DisplayName "Update ring - SAC - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - SAC" -GroupTypes DynamicMembership -MembershipRule "(device.managementType -eq ""MDM"") -and (device.deviceOSType -contains ""Windows"")" -MembershipRuleProcessingState On
