@@ -47,6 +47,7 @@ $newgroups = @( "All Windows 10 1507 – MDM", `
                 "All iOS Devices – MDM", `
                 "All macOS Devices – MDM", `
                 "All Windows Enrolled Devices – MDM", `
+                "All Windows AutoPilot Devices - MDM", `
                 "Test User - MDM", `
                 "Test Device - MDM", `
                 "Update ring - Insider - MDM", `
@@ -71,6 +72,9 @@ New-AzureADMSGroup -DisplayName "All Windows 10 1803 – MDM" -MailEnabled $fals
 New-AzureADMSGroup -DisplayName "All Windows 10 1809 – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows 10 1809 – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.deviceOSVersion -contains ""10.0.17763"")" -MembershipRuleProcessingState On
 New-AzureADMSGroup -DisplayName "All Windows 10 1903 – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows 10 1903 – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.deviceOSVersion -contains ""10.0.18362"")" -MembershipRuleProcessingState On
 New-AzureADMSGroup -DisplayName "All Windows 10 1909 – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows 10 1909 – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.deviceOSVersion -contains ""10.0.18363"")" -MembershipRuleProcessingState On
+
+#Create Dynamic groups Windows Autopilot
+New-AzureADMSGroup -DisplayName "All Windows AutoPilot Devices - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Windows AutoPilot Devices" -GroupTypes DynamicMembership -MembershipRule "(device.devicePhysicalIDs -any _ -contains “[ZTDId]”)" -MembershipRuleProcessingState On
 
 
 #Create Dynamic groups for specific OSType Versions
