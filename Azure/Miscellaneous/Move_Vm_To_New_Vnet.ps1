@@ -3,13 +3,15 @@
 ##*===============================================
 ##* START - DESCRIPTION
 ##*===============================================    
-This script will "move" a VM to another Vnet. It will copy your VM configuration and create a new VM into the selected Vnet.
-This script is default suited for Windows vm, if you will move a Linux go down to line 203 and change "-Windows" to "-Linux"
+This script will "move" a your VM to another Vnet. It will copy your VM configuration and create a new VM into the selected Vnet.
+Running this script will stop the VM that you will move!
+If you want to move a Linux go down and change "-Windows" to "-Linux" under creation on OS Disk
+Your pubic IP will be moved from your current NIC to the new one, same with NSG.
 
 Script author: Morten Pedholt
 Script created on: November 2019
 Script edited date: NA
-Script last edited by: Morten Pedholt
+Script last edited by: NA
 Script version: 1.0.0
 ##*===============================================
 ##* END - DESCRIPTION
@@ -17,7 +19,7 @@ Script version: 1.0.0
 #>
 
 ##*===============================================
-##* START - VARIABLES
+##* START - PARAMETERS
 ##*===============================================
 
 [CmdletBinding()]
@@ -41,7 +43,7 @@ Param (
 	
 )
 ##*===============================================
-##* END - VARIABLES
+##* END - PARAMETERS
 ##*===============================================
 
 
@@ -268,7 +270,7 @@ Remove-AzNetworkInterface -ResourceGroupName $VMResouceGroup -Name $CurrentNICCo
 Write-host "old resources has now been deleted." -ForegroundColor Cyan
 
 } else {
-write-host "Not deleteing old ressources" -ForegroundColor Cyan
+write-host "Not deleteing old resources" -ForegroundColor Cyan
 
 }
 
