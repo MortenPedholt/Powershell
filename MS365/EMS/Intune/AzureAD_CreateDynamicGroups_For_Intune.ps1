@@ -74,7 +74,7 @@ New-AzureADMSGroup -DisplayName "All Windows 10 1903 – MDM" -MailEnabled $fals
 New-AzureADMSGroup -DisplayName "All Windows 10 1909 – MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "All Windows 10 1909 – MDM" -GroupTypes DynamicMembership -MembershipRule "(device.deviceOSVersion -contains ""10.0.18363"")" -MembershipRuleProcessingState On
 
 #Create Dynamic groups Windows Autopilot
-New-AzureADMSGroup -DisplayName "All Windows AutoPilot Devices - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Windows AutoPilot Devices" -GroupTypes DynamicMembership -MembershipRule "(device.devicePhysicalIDs -any _ -contains “[ZTDId]”)" -MembershipRuleProcessingState On
+New-AzureADMSGroup -DisplayName "All Windows AutoPilot Devices - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Windows AutoPilot Devices" -GroupTypes DynamicMembership -MembershipRule "(device.devicePhysicalIDs -any _ -contains ""[ZTDId]"")" -MembershipRuleProcessingState On
 
 
 #Create Dynamic groups for specific OSType Versions
@@ -96,3 +96,6 @@ New-AzureADGroup -DisplayName "Test Device - MDM" -MailEnabled $false -MailNickn
 #Create Windows update ring groups
 New-AzureADGroup -DisplayName "Update ring - Insider - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - Insider" 
 New-AzureADMSGroup -DisplayName "Update ring - SAC - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Update ring - SAC" -GroupTypes DynamicMembership -MembershipRule "(device.managementType -eq ""MDM"") -and (device.deviceOSType -contains ""Windows"")" -MembershipRuleProcessingState On
+
+#Disconnect Azure AD session
+Disconnect-AzureAD
