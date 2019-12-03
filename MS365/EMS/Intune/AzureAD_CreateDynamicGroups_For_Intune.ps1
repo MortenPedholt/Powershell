@@ -29,7 +29,7 @@ Import-Module AzureAdPreview
 
 
 #Connect to AzureAD
-$azureadcred = Get-Credential
+#$azureadcred = Get-Credential
 Connect-AzureAD -Credential $azureadcred
 
 
@@ -48,8 +48,8 @@ $newgroups = @( "All Windows 10 1507 – MDM", `
                 "All macOS Devices – MDM", `
                 "All Windows Enrolled Devices – MDM", `
                 "All Windows AutoPilot Devices - MDM", `
-                "Test User - MDM", `
-                "Test Device - MDM", `
+                "ITR Test User - MDM", `
+                "ITR Test Device - MDM", `
                 "Update ring - Insider - MDM", `
                 "Update ring - SAC - MDM")
 
@@ -89,8 +89,8 @@ New-AzureADMSGroup -DisplayName "All Enrolled Windows Devices – MDM" -MailEnab
 
 
 #Create test groups for MDM enrollment
-New-AzureADGroup -DisplayName "Test User - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Test User - MDM" 
-New-AzureADGroup -DisplayName "Test Device - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Test Device - MDM" 
+New-AzureADGroup -DisplayName "ITR Test User - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Test User - MDM" 
+New-AzureADGroup -DisplayName "ITR Test Device - MDM" -MailEnabled $false -MailNickname "NotSet" -SecurityEnabled $True -Description "Test Device - MDM" 
 
 
 #Create Windows update ring groups
