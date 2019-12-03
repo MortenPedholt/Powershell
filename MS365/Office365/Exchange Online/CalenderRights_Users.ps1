@@ -16,11 +16,7 @@ $mailgroup = mailgroup@domain.com
 
 
 #$Mailboxes = Get-Mailbox -Filter '(RecipientTypeDetails -eq "UserMailbox")'
-<<<<<<< HEAD
-$Mailboxes = Get-DistributionGroupMember -Identity $mailgroup  | Get-Mailbox
-=======
 $Mailboxes = Get-DistributionGroupMember -Identity $mailgroup | Get-Mailbox
->>>>>>> 9149c13ce486126b1254210ac89eaa376709be7c
 $Mailboxes | ForEach-Object {
     	
     $CalendarPath = $_.UserPrincipalName + ":\" + (Get-MailboxFolderStatistics $_.Identity | Where-Object { $_.Foldertype -eq "Calendar" } | Select-Object -First 1).Name
