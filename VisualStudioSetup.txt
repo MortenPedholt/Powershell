@@ -38,4 +38,3 @@ Open "Git CMD" --> run the following commands:
 
 git config --global user.email "you@example.com"
 git config --global user.name "Your Name"
-#Changetest
