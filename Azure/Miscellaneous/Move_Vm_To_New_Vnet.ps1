@@ -128,7 +128,7 @@ $Vnet = Get-AzVirtualNetwork -Name $MoveToVnetName -ResourceGroupName $NetworkRe
 $Subnet = Get-AzVirtualNetworkSubnetConfig -Name $MoveToSubnetName -VirtualNetwork $Vnet
 
 #IP Config to New NIC
-$NewIPConfig = New-AzNetworkInterfaceIpConfig -Subnet $Subnet -Name ‘config1’ -Verbose
+$NewIPConfig = New-AzNetworkInterfaceIpConfig -Subnet $Subnet -Name "config1" -Verbose
 
 #Create new NIC
 Write-Host "Creating new NIC" -ForegroundColor Cyan

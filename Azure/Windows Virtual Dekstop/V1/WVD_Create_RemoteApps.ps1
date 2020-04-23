@@ -10,7 +10,7 @@ Add-RdsAccount -DeploymentUrl "https://rdbroker.wvd.microsoft.com" -Credential $
 $tenant = "xxxxx"
 $hostpoolname = "xxxxx"
 $appgroupname = "xxxxx"
-Desktop Application Group
+
 
 
 get-RdsHostPool -TenantName $tenant -Name $hostpoolname 
@@ -68,14 +68,12 @@ get-RdsSessionHost -TenantName $tenant -HostPoolName $hostpoolname
 #Remove RDS Remote APP
 Remove-RdsRemoteApp -TenantName $tenant -HostPoolName $hostpoolname -AppGroupName $appgroupname -Name "Microsoft Edge - test"
 
-
 #Set max sessions
-
-Set-RdsHostPool -Name @hostpoolname -TenantName $tenant -DepthFirstLoadBalancer -MaxSessionLimit 4
+Set-RdsHostPool -Name $hostpoolname -TenantName $tenant -DepthFirstLoadBalancer -MaxSessionLimit 4
 
 #Get user sessions
-
 Get-RdsUserSession -TenantName $tenant -HostPoolName $hostpoolname
+
 #LOg brugersession af
 Invoke-RdsUserSessionLogoff -TenantName $tenant -HostPoolName $hostpoolname -SessionHostName wvddevhp04-0.koncern.local -SessionId 2
 Get-RdsUserSession -TenantName $tenant -HostPoolName $hostpoolname | Where-Object { $_.UserPrincipalName -eq "contoso\user1" } | Invoke-RdsUserSessionLogoff -NoUserPrompt

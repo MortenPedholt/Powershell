@@ -21,7 +21,7 @@ $VM = Get-AzVM -Name $VMname -ResourceGroupName $ResourceGroup
 Stop-AzVM -Name $VM.Name -ResourceGroupName $VM.ResourceGroupName -Force
 
 #swap out the OS disk using the VM variable
-$VM.StorageProfile.OsDisk.Vhd.Uri = 'https://xxxxxxxx.blob.core.windows.net/vhds/xxxxxxx.vhd'
+$VM.StorageProfile.OsDisk.Vhd.Uri = 'https://xxxxxxx.blob.core.windows.net/vhds/xxxxx-V1.vhd'
 
 #Update the VM configuration
 Update-AzVM -VM $VM -ResourceGroupName $ResourceGroup
