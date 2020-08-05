@@ -6,11 +6,7 @@
 
 #Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
 
-$AppList = "46928bounde.EclipseManager",
-           "ActiproSoftwareLLC.562882FEEB491",
-           "AdobeSystemsIncorporated.AdobePhotoshopExpress",
-           "D5EA27B7.Duolingo-LearnLanguagesforFree",
-           "Microsoft.3DBuilder",
+$AppList = "Microsoft.3DBuilder",
            "Microsoft.BingNews",
            "Microsoft.BingWeather",
            "Microsoft.FreshPaint",
@@ -21,15 +17,31 @@ $AppList = "46928bounde.EclipseManager",
            "Microsoft.Office.OneNote",
            "Microsoft.Office.Sway",
            "Microsoft.People",
-           "Microsoft.Print3D",
            "Microsoft.SkypeApp",
            "Microsoft.WindowsAlarms",
            "Microsoft.windowscommunicationsapps",
            "Microsoft.WindowsFeedbackHub",
            "Microsoft.WindowsMaps",
-           "Microsoft.XboxApp",
            "Microsoft.ZuneMusic",
-           "Microsoft.ZuneVideo"
+           "Microsoft.ZuneVideo",
+           "Microsoft.MicrosoftSolitaireCollection",
+           "Microsoft.MixedReality.Portal",
+           "Microsoft.OneConnect",
+           "Microsoft.StorePurchaseApp",
+           "Microsoft.Wallet",
+           "Microsoft.Xbox.TCUI",
+           "Microsoft.XboxApp",
+           "Microsoft.XboxGameOverlay",
+           "Microsoft.XboxGamingOverlay",
+           "Microsoft.XboxIdentityProvider",
+           "Microsoft.XboxSpeechToTextOverlay",
+           "Microsoft.YourPhone",
+           "Microsoft.GetHelp",
+           "Microsoft.Microsoft3DViewer",
+           "Microsoft.WindowsSoundRecorder"
+           
+
+
                       
 ForEach ($App in $AppList)
 {
