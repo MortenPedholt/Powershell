@@ -38,7 +38,9 @@ $AppList = "Microsoft.3DBuilder",
            "Microsoft.YourPhone",
            "Microsoft.GetHelp",
            "Microsoft.Microsoft3DViewer",
-           "Microsoft.WindowsSoundRecorder"
+           "Microsoft.WindowsSoundRecorder",
+           "Microsoft.XboxGameCallableUI",
+           "SpotifyAB.SpotifyMusic"
            
 
 
@@ -52,7 +54,7 @@ $ProAppFullName = (Get-AppxProvisionedPackage -online | Where-Object {$_.Display
     if ($AppFullName)
     {
     Write-Host "Removing package: $App"
-    Remove-AppxPackage -package $AppFullName
+    Remove-AppxPackage -AllUsers -package $AppFullName
     }
     else
     {
