@@ -1,4 +1,4 @@
-Start-Transcript -Path C:\temp\OneDriveReleaseFiles.txt -IncludeInvocationHeader -Force -Verbose
+Start-Transcript -Path $env:APPDATA\Microsoft\OneDrive_FreeUpSpace.txt -IncludeInvocationHeader -Force -Verbose
 
 #Locate OneDrive folders
 $OneDriveConnections = Get-ChildItem 'HKCU:\SOFTWARE\SyncEngines\Providers\OneDrive' -Recurse

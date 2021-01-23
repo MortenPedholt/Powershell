@@ -54,7 +54,7 @@ $ProAppFullName = (Get-AppxProvisionedPackage -online | Where-Object {$_.Display
     if ($AppFullName)
     {
     Write-Host "Removing package: $App"
-    Remove-AppxPackage -AllUsers -package $AppFullName
+    Remove-AppxPackage -package $AppFullName
     }
     else
     {
