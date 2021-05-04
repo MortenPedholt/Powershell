@@ -11,7 +11,7 @@ $StorageAccount = Get-AzStorageAccount -Name $StorageAccountName -ResourceGroupN
 
 #Connect to Storage share
 Write-Verbose "Connect to Azure storage context" -Verbose
-$StorageAccountContext = New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName
+#$StorageAccountContext = New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName
 
 Write-Verbose "Getting Azure file share information" -Verbose
 $Shareinformation = Get-AzStorageShare -Name $StorageAccountShareName -Context $StorageAccount.Context
