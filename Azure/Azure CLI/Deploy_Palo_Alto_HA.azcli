@@ -1,0 +1,128 @@
+
+#Requirements!
+# Virtual Network must exist with subnets.
+# This is created quick and dirty, will be updated soon.
+
+
+##*===============================================
+##* START - Parameters
+##*===============================================
+# Resourcegroup parameters
+ResourceGroupName=testrg
+
+# availability parameters
+AvailabilityName=PA-HA-AVSET
+AvailabilityFaultDomain=2
+AvailabilityUpdateDomain=2
+
+# Palo Alto Image konfiguration
+Paloimage=paloaltonetworks:vmseries1:byol:9.0.1
+Paloplan=byol
+Paloproduct=vmseries1
+Palopublisher=paloaltonetworks
+
+# VM size
+vmsize=Standard_D3_V2
+
+# VM 1 parameters
+vm1name=paloaltovmname01
+
+
+# Virtal network configuration and nics
+vmvnet=virtualnetworkname
+vmsubnetmanagement=Mgmtsubnet
+vmsubnetuntrust=untrustsubnet
+vmsubnettrust=Trustsubnet
+
+# VM 2 parameters
+vm2name=FW-paloaltovmname02
+
+# Username and Password (Qucik and dirty!)
+Adminpassword=securepassword001
+Adminusername=paloadmin
+
+##*===============================================
+##* END - Parameters
+##*===============================================
+
+#Create Availability set
+az vm availability-set create \
+    --resource-group $ResourceGroupName \
+    --name $AvailabilityName \
+    --platform-fault-domain-count $AvailabilityFaultDomain \
+    --platform-update-domain-count $AvailabilityUpdateDomain
+
+#Create Nics for Palo Alto VM 1
+#Create nic management for VM1
+az network nic create \
+    --resource-group $ResourceGroupName \
+    --name $vm1name-eth0 \
+    --vnet-name $vmvnet \
+    --subnet $vmsubnetmanagement
+
+#Create untrust nic for VM1
+az network nic create \
+    --resource-group $ResourceGroupName \
+    --name $vm1name-eth1 \
+    --vnet-name $vmvnet \
+    --subnet $vmsubnetuntrust
+
+#Create Trust nic for VM1
+az network nic create \
+    --resource-group $ResourceGroupName \
+    --name $vm1name-eth2 \
+    --vnet-name $vmvnet \
+    --subnet $vmsubnettrust
+
+#Create Palo Alto VM 1
+az vm create \
+ --resource-group $ResourceGroupName \
+ --name $vm1name \
+ --nics  $vm1name-eth0 $vm1name-eth1 $vm1name-eth2 \
+ --size $vmsize \
+ --image $Paloimage \
+ --plan-name $Paloplan \
+ --plan-product $Paloproduct \
+ --plan-publisher $Palopublisher \
+ --admin-password $Adminpassword \
+ --authentication-type password \
+ --admin-username $Adminusername \
+ --availability-set $AvailabilityName
+
+
+#Create Nics for Palo Alto VM 2
+#Create nic management for VM2
+az network nic create \
+    --resource-group $ResourceGroupName \
+    --name $vm2name-eth0 \
+    --vnet-name $vmvnet \
+    --subnet $vmsubnetmanagement
+
+#Create untrust nic for VM2
+az network nic create \
+    --resource-group $ResourceGroupName \
+    --name $vm2name-eth1 \
+    --vnet-name $vmvnet \
+    --subnet $vmsubnetuntrust
+
+#Create Trust nic for VM2
+az network nic create \
+    --resource-group $ResourceGroupName \
+    --name $vm2name-eth2 \
+    --vnet-name $vmvnet \
+    --subnet $vmsubnettrust
+
+#Create Palo Alto VM 2
+az vm create \
+ --resource-group $ResourceGroupName \
+ --name $vm2name \
+ --nics  $vm2name-eth0 $vm2name-eth1 $vm2name-eth2 \
+ --size $vmsize \
+ --image $Paloimage \
+ --plan-name $Paloplan \
+ --plan-product $Paloproduct \
+ --plan-publisher $Palopublisher \
+ --admin-password $Adminpassword \
+ --authentication-type password \
+ --admin-username $Adminusername \
+ --availability-set $AvailabilityName
