@@ -27,7 +27,6 @@ vmsize=Standard_D3_V2
 # VM 1 parameters
 vm1name=paloaltovmname01
 
-
 # Virtal network configuration and nics
 vmvnet=virtualnetworkname
 vmsubnetmanagement=Mgmtsubnet
