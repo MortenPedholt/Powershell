@@ -6,14 +6,12 @@
 .DESCRIPTION
   Edit the parameters before running the script.
   Connect-Azaccount to login with your credentials.
-
-
+  
 .NOTES
   Version:        1.0
   Author:         Morten Pedholt
   Creation Date:  June 24th 2021
-  
-  
+    
 .EXAMPLE
   run with parameter -OutputPath C:\temp
 
