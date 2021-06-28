@@ -26,7 +26,7 @@ Param (
 
 
 #Connect to Azure
-Connect-AzAccount
+#Connect-AzAccount
 
 #Get Azure Subscriptions and run them in foreach loop
 $report = @()
@@ -41,7 +41,7 @@ foreach-object {
     $SubId    = $_.SubscriptionId  
 
     #Getting information about Role Assignments for choosen subscription
-    Write-Verbose "Getting information for Role Assignments" -Verbose
+    Write-Verbose "Getting information about Role Assignments..." -Verbose
     $roles = Get-AzRoleAssignment | Select-Object RoleDefinitionName,DisplayName,SignInName,ObjectId,ObjectType,Scope,
     @{name="TenantId";expression = {$TenantId}},@{name="SubscriptionName";expression = {$Name}},@{name="SubscriptionId";expression = {$SubId}}
 
@@ -54,7 +54,7 @@ foreach-object {
             $RoleDefinitionName = $role.RoleDefinitionName
             $AssignmentScope = $role.Scope
             $SubscriptionName = $Context.Subscription.Name
-            $subscriptionID = $Context.Subscription.SubscriptionId
+            $SubscriptionID = $Context.Subscription.SubscriptionId
 
             #Check for Custom Role
             $CheckForCustomRole = Get-AzRoleDefinition -Name $RoleDefinitionName
@@ -63,15 +63,15 @@ foreach-object {
             #New PSObject
             $obj = New-Object -TypeName PSObject
             $obj | Add-Member -MemberType NoteProperty -Name SubscriptionName -value $SubscriptionName
-			$obj | Add-Member -MemberType NoteProperty -Name SubscriptionID -value $SubscriptionID			
+		      	$obj | Add-Member -MemberType NoteProperty -Name SubscriptionID -value $SubscriptionID			
             
-			$obj | Add-Member -MemberType NoteProperty -Name DisplayName -Value $DisplayName
-			$obj | Add-Member -MemberType NoteProperty -Name SignInName -Value $SignInName
-			$obj | Add-Member -MemberType NoteProperty -Name ObjectType -value $ObjectType
+			      $obj | Add-Member -MemberType NoteProperty -Name DisplayName -Value $DisplayName
+			      $obj | Add-Member -MemberType NoteProperty -Name SignInName -Value $SignInName
+			      $obj | Add-Member -MemberType NoteProperty -Name ObjectType -value $ObjectType
             
             $obj | Add-Member -MemberType NoteProperty -Name RoleDefinitionName -value $RoleDefinitionName
             $obj | Add-Member -MemberType NoteProperty -Name CustomRole -value $CustomRole
-			$obj | Add-Member -MemberType NoteProperty -Name AssignmentScope -value $AssignmentScope
+		      	$obj | Add-Member -MemberType NoteProperty -Name AssignmentScope -value $AssignmentScope
             
             
 			
