@@ -14,14 +14,14 @@
 .PARAMETER OutPutPath
 Export Role Assignments to .CSV file to the selected path.
 
-.PARAMETER OnlySelectedSubscription
+.PARAMETER SelectCurrentSubscription
 Will only Export Role Assignments from the current subscription you have selected.
     
 .EXAMPLE
 Export Role assignments for all subscriptions: .\Export-RoleAssignments.ps1 
 Export Role assignments for all subscriptions and export to CSV file to "C:\temp" folder: .\Export-RoleAssignments.ps1 -OutPutPath C:\temp
-Only Export Role assignments for current subscription: .\Export-RoleAssignments.ps1 -OnlySelectedSubscription
-Only Export Role assignments for current subscription and export to CSV file to "C:\temp" folder .\Export-RoleAssignments.ps1 -OnlySelectedSubscription -OutPutPath C:\temp
+Only Export Role assignments for current subscription: .\Export-RoleAssignments.ps1 -SelectCurrentSubscription
+Only Export Role assignments for current subscription and export to CSV file to "C:\temp" folder .\Export-RoleAssignments.ps1 -SelectCurrentSubscription -OutPutPath C:\temp
   
 #>
 
@@ -31,12 +31,12 @@ Param (
     [Parameter(Mandatory=$false)]    
     [string]$OutputPath = '',
     [Parameter(Mandatory=$false)]    
-    [Switch]$OnlySelectedSubscription
+    [Switch]$SelectCurrentSubscription
 	
 )
 
 #Get Azure Subscriptions
-if ($OnlySelectedSubscription) {
+if ($SelectCurrentSubscription) {
   #Only selection current subscription
   $CurrentContext = Get-AzContext
   Write-Verbose "Only running for current subscription $($CurrentContext.Subscription.Name)" -Verbose
