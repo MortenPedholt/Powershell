@@ -1,44 +1,65 @@
 <#
 .SYNOPSIS
-  Export all RBAC Roles in All Azure subscriptions
-  This script is provided as is
+ This script will export all Role Assignement in your Azure Subscriptions
+ To check my github to get updated versions:
+ https://github.com/MortenPedholt
 
-.DESCRIPTION
-  Edit the parameters before running the script.
-  Connect-Azaccount to login with your credentials.
-  
+ This script is provided as is.
+
 .NOTES
   Version:        1.0
   Author:         Morten Pedholt
-  Creation Date:  June 24th 2021
+  Creation Date:  09-07-2021
+
+.PARAMETER OutPutPath
+Export Role Assignments to .CSV file to the selected path.
+
+.PARAMETER OnlySelectedSubscription
+Will only Export Role Assignments from the current subscription you have selected.
     
 .EXAMPLE
-  run with parameter -OutputPath C:\temp
-
+Export Role assignments for all subscriptions: .\Export-RoleAssignments.ps1 
+Export Role assignments for all subscriptions and export to CSV file to "C:\temp" folder: .\Export-RoleAssignments.ps1 -OutPutPath C:\temp
+Only Export Role assignments for current subscription: .\Export-RoleAssignments.ps1 -OnlySelectedSubscription
+Only Export Role assignments for current subscription and export to CSV file to "C:\temp" folder .\Export-RoleAssignments.ps1 -OnlySelectedSubscription -OutPutPath C:\temp
+  
 #>
+
 
 #Parameters
 Param (
-    [Parameter(Mandatory=$true)]    
-    [string]$OutputPath = ''
+    [Parameter(Mandatory=$false)]    
+    [string]$OutputPath = '',
+    [Parameter(Mandatory=$false)]    
+    [Switch]$OnlySelectedSubscription
 	
 )
 
+#Get Azure Subscriptions
+if ($OnlySelectedSubscription) {
+  #Only selection current subscription
+  $CurrentContext = Get-AzContext
+  Write-Verbose "Only running for current subscription $($CurrentContext.Subscription.Name)" -Verbose
+  #$SetAzContext = Set-AzContext -Tenant $CurrentContext.Tenant.Id -SubscriptionId $CurrentContext.Subscription.Id -Force
+  $Subscriptions = Get-AzSubscription -SubscriptionId $CurrentContext.Subscription.Id
 
-#Connect to Azure
-#Connect-AzAccount
+}else {
+  Write-Verbose "Running for all subscriptions" -Verbose
+  $Subscriptions = Get-AzSubscription
+}
 
-#Get Azure Subscriptions and run them in foreach loop
+
+#Get Role roles in foreach loop
 $report = @()
-Get-AzSubscription | 
-foreach-object {
-    #Choose subscription
-    Write-Verbose "Changing to Subscription $($_.Name)" -Verbose
 
-    $Context = Set-AzContext -TenantId $_.TenantId -SubscriptionId $_.Id -Force
-    $Name     = $_.Name
-    $TenantId = $_.TenantId
-    $SubId    = $_.SubscriptionId  
+foreach ($Subscription in $Subscriptions) {
+    #Choose subscription
+    Write-Verbose "Changing to Subscription $($Subscription.Name)" -Verbose
+
+    $Context = Set-AzContext -TenantId $Subscription.TenantId -SubscriptionId $Subscription.Id -Force
+    $Name     = $Subscription.Name
+    $TenantId = $Subscription.TenantId
+    $SubId    = $Subscription.SubscriptionId  
 
     #Getting information about Role Assignments for choosen subscription
     Write-Verbose "Getting information about Role Assignments..." -Verbose
@@ -81,6 +102,11 @@ foreach-object {
     }
 }
 
-#Export CSV file
-Write-Verbose "Exporting CSV file to $OutputPath" -Verbose
-$Report | Export-Csv $OutputPath\RBACExport-$(Get-Date -Format "yyyy-MM-dd").csv
+if ($OutputPath) {
+  #Export to CSV file
+  Write-Verbose "Exporting CSV file to $OutputPath" -Verbose
+  $Report | Export-Csv $OutputPath\RoleExport-$(Get-Date -Format "yyyy-MM-dd").csv
+
+}else {
+  $Report
+}

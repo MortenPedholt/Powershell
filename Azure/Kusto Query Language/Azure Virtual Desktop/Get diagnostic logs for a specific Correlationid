@@ -1,0 +1,12 @@
+// Get diagnostic details from a specific CorrelationId
+// Make sure to paste the CorrelationId the "UserSessionId" variable
+let UserSessionId = ""; //Example let UserSessionId = "4122c03f-d348-4264-8178-62e62d710000";
+WVDCheckpoints 
+| where CorrelationId == UserSessionId
+| where Name == "ExperienceMonitor::User clicked on the Send Diagnostics button"
+| join (WVDConnections
+    | where CorrelationId == UserSessionId
+    | where State == "Connected"
+    | project ClientVersion, ClientOS, SessionHostName, GatewayRegion, CorrelationId)
+    on CorrelationId
+| project TimeGenerated, CorrelationId, UserName, GatewayRegion, Parameters, ClientOS, ClientVersion, SessionHostName

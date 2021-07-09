@@ -1,0 +1,12 @@
+// Get specific user who send diagnostic details from active session
+// Make sure to paste the UPN the "upn" variable
+let upn = ""; // Example: let upn = "mp@pedholtlab.com";
+WVDCheckpoints 
+| where UserName == upn
+| where Name == "ExperienceMonitor::User clicked on the Send Diagnostics button"
+| join (WVDConnections
+    | where UserName == upn
+    | where State == "Connected"
+    | project ClientVersion, ClientOS, SessionHostName, GatewayRegion, CorrelationId)
+    on CorrelationId
+| project TimeGenerated, CorrelationId, UserName, GatewayRegion, Parameters, ClientOS, ClientVersion, SessionHostName
