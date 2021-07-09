@@ -42,7 +42,6 @@ $CurrentContext = Get-AzContext
 if ($SelectCurrentSubscription) {
   #Only selection current subscription
   Write-Verbose "Only running for selected subscription $($CurrentContext.Subscription.Name)" -Verbose
-  #$SetAzContext = Set-AzContext -Tenant $CurrentContext.Tenant.Id -SubscriptionId $CurrentContext.Subscription.Id -Force
   $Subscriptions = Get-AzSubscription -SubscriptionId $CurrentContext.Subscription.Id -TenantId $CurrentContext.Tenant.Id
 
 }else {
