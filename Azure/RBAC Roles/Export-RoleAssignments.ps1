@@ -35,17 +35,19 @@ Param (
 	
 )
 
+#Get Current Context
+$CurrentContext = Get-AzContext
+
 #Get Azure Subscriptions
 if ($SelectCurrentSubscription) {
   #Only selection current subscription
-  $CurrentContext = Get-AzContext
-  Write-Verbose "Only running for current subscription $($CurrentContext.Subscription.Name)" -Verbose
+  Write-Verbose "Only running for selected subscription $($CurrentContext.Subscription.Name)" -Verbose
   #$SetAzContext = Set-AzContext -Tenant $CurrentContext.Tenant.Id -SubscriptionId $CurrentContext.Subscription.Id -Force
-  $Subscriptions = Get-AzSubscription -SubscriptionId $CurrentContext.Subscription.Id
+  $Subscriptions = Get-AzSubscription -SubscriptionId $CurrentContext.Subscription.Id -TenantId $CurrentContext.Tenant.Id
 
 }else {
-  Write-Verbose "Running for all subscriptions" -Verbose
-  $Subscriptions = Get-AzSubscription
+  Write-Verbose "Running for all subscriptions in Tenant" -Verbose
+  $Subscriptions = Get-AzSubscription -TenantId $CurrentContext.Tenant.Id
 }
 
 
