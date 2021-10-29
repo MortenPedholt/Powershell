@@ -1,5 +1,5 @@
 #Modules Required
-#Requires -modules Az.Resources
+#Requires -modules Az.Resources, Az.Accounts
 
 #Parameters
 
@@ -18,9 +18,9 @@ $applications = Get-AzADApplication
 $servicePrincipals = Get-AzADServicePrincipal
 
 $appWithCredentials = @()
-$appWithCredentials += $applications | Sort-Object -Property DisplayName | % {
+$appWithCredentials += $applications | Sort-Object -Property DisplayName | ForEach-Object {
  $application = $_
- $sp = $servicePrincipals | ? ApplicationId -eq $application.ApplicationId
+ $sp = $servicePrincipals | Where-Object ApplicationId -eq $application.ApplicationId
  Write-Verbose ('Fetching information for application {0}' -f $application.DisplayName)
  $application | Get-AzADAppCredential -ErrorAction SilentlyContinue | Select-Object -Property @{Name='DisplayName'; Expression={$application.DisplayName}}, @{Name='ObjectId'; Expression={$application.Id}}, @{Name='ApplicationId'; Expression={$application.ApplicationId}}, @{Name='KeyId'; Expression={$_.KeyId}}, @{Name='Type'; Expression={$_.Type}},@{Name='StartDate'; Expression={$_.StartDate -as [datetime]}},@{Name='EndDate'; Expression={$_.EndDate -as [datetime]}}
 }
@@ -28,7 +28,7 @@ $appWithCredentials += $applications | Sort-Object -Property DisplayName | % {
 Write-Verbose 'Validating expiration dates...' -Verbose
 $today = (Get-Date).ToUniversalTime()
 $limitDate = $today.AddDays($ExpiresInDays)
-$appWithCredentials | Sort-Object EndDate | % {
+$appWithCredentials | Sort-Object EndDate | ForEach-Object {
      if($_.EndDate -lt $today) {
          $_ | Add-Member -MemberType NoteProperty -Name 'Status' -Value 'Expired'
      } elseif ($_.EndDate -le $limitDate) {
