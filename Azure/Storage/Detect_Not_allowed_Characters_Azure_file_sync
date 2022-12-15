@@ -1,0 +1,23 @@
+gci -recurse . | where {$_.Name -match "[^\u0000-\u007F]"}
+
+
+[Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($inputString))
+
+
+$files = gci -recurse | where {$_.Name -match "[^\u0020-\u007F]"}
+$files | ForEach-Object {
+  $newname = Convert-ToLatinCharacters $_.Name
+  $newname = $newname.replace('?','_')
+  if ($_.Name -ne $newname) {
+    $num=1
+    $nextname = $_.Fullname.replace($_.Name,$newname)
+    while(Test-Path -Path $nextname)
+    {
+      $next = ([io.fileinfo]$newname).basename + " ($num)" + ([io.fileinfo]$newname).Extension
+      $nextname = $_.Fullname.replace($_.Name,$next)
+      $num+=1
+    }
+    echo $nextname
+    ren $_.Fullname $nextname
+  }
+}
