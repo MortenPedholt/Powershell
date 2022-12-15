@@ -1,0 +1,19 @@
+If you have users that aren't enrolled for MFA, you can determine what happens when they try to authenticate. Use the registry setting REQUIRE_USER_MATCH in the registry path HKLM\Software\Microsoft\AzureMFA to control the feature behavior. This setting has a single configuration option:
+
+Key	Value	Default
+REQUIRE_USER_MATCH	TRUE/FALSE	Not set (equivalent to TRUE)
+The purpose of this setting is to determine what to do when a user is not enrolled for MFA. When the key does not exist, is not set, or is set to TRUE, and the user is not enrolled, then the extension fails the MFA challenge. When the key is set to FALSE and the user is not enrolled, authentication proceeds without performing MFA. If a user is enrolled in MFA, they must authenticate with MFA even if REQUIRE_USER_MATCH is set to FALSE.
+
+You can choose to create this key and set it to FALSE while your users are onboarding, and may not all be enrolled for Azure MFA yet. However, since setting the key permits users that aren't enrolled for MFA to sign in, you should remove this key before going to production.
+
+Troubleshooting
+
+
+
+
+How do I disable MFA on one of the NPS server to test it?
+You can disable the MFA on NPS server.  This is essential to find out when you are troubleshooting to narrow down which NPS server is having the issue. To disable the MFA on a NPS server without de-registering it,
+Navigate to the registry key, HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\AuthSrv\Parameters, Empty the following key values
+AuthorizationDLLs:  C:\Program Files\Microsoft\AzureMfa\Extensions\MfaNpsAuthzExt.dll
+ExtentionDLL: C:\Program Files\Microsoft\AzureMfa\Extensions\MfaNpsAuthnExt.dll
+This will stop the NPS to look for Secondary Auth
