@@ -23,7 +23,7 @@ Script version: 1.0.0
 [CmdletBinding()]
 Param (
     [Parameter(Mandatory=$false)]    
-    [string]$modulename = 'MSOnline',
+    [string]$modulename = 'AzureAD',
     [Parameter(Mandatory=$false)]    
     [string]$logpath = $env:SystemDrive + '\Scriptlogs'
 	
@@ -85,9 +85,8 @@ if ($modulename) {
 ##* START - SCRIPT BODY
 ##*===============================================
 
-#Connect to MSOnline
-$UserCredential = Get-Credential -ErrorAction Stop
-Connect-MsolService -Credential $UserCredential
+#Connect to AzureAD
+Connect-AzureAD
 
 
 #Set password to never expire
@@ -127,14 +126,15 @@ while("y","n" -notcontains $YesOrNo )
 }
  
 If ($YesOrNo -eq "y") {
+$UserObject = Get-AzureADUser -Filter "UserPrincipalName eq '$user'"
 Write-host "setting user password to never expire for" $user.UserPrincipalName -ForegroundColor Cyan
-Set-MsolUser -UserPrincipalName $user.UserPrincipalName -PasswordNeverExpires $true
-Get-MsolUser -UserPrincipalName $user.UserPrincipalName | Select-Object UserPrincipalName, PasswordNeverExpires
+Set-AzureADUser -ObjectId $UserObject.ObjectId -PasswordNeverExpires $true
+Get-AzureADUser -ObjectId $UserObject.ObjectId | Select-Object UserPrincipalName, PasswordNeverExpires
 
 } else {
 write-host "Not changeing anything for" $user.UserPrincipalName -ForegroundColor Red
 write-host "If PasswordNeverExpires is displayed as TRUE, it was set before running this script" -ForegroundColor Red
-Get-MsolUser -UserPrincipalName $user.UserPrincipalName | Select-Object UserPrincipalName, PasswordNeverExpires
+Get-AzureADUser -ObjectId $UserObject.ObjectId | Select-Object UserPrincipalName, PasswordNeverExpires
 }
 
 }
