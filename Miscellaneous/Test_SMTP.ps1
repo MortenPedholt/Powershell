@@ -1,4 +1,3 @@
-RFaa5OQK9TZv74kyBpR9!
 #With authentication
 
 $From = "" # eg. test@pedholtlab.com
