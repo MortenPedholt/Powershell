@@ -1,3 +1,4 @@
+RFaa5OQK9TZv74kyBpR9!
 #With authentication
 
 $From = "" # eg. test@pedholtlab.com
@@ -16,8 +17,8 @@ $smtp.Send($From, $To, $subject, $body)
 
 #Without authentication
 
-$From = "test@hjvarme.dk" # eg. test@pedholtlab.com
-$To = "mpp@apento.com" # eg. test@pedholtlab.com
+$From = "" # eg. test@pedholtlab.com
+$To = "" # eg. test@pedholtlab.com
 $SMTPServer = "smtp.sendgrid.net" # eg. smtp.pedholtlab.com
 $SMTPPort = "25"
 $subject = "Test mail from smtp powershell script"
