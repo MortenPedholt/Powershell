@@ -23,6 +23,6 @@ $SMTPPort = "25"
 $subject = "Test mail from smtp powershell script"
 $body = "Test mail from smtp powershell script"
 $smtp = New-Object System.Net.Mail.SmtpClient($SMTPServer, $SMTPPort)
-$smtp.EnableSSL = $true
+#$smtp.EnableSSL = $true
 #$smtp.Credentials = New-Object System.Net.NetworkCredential($Username, $Password)
 $smtp.Send($From, $To, $subject, $body)
